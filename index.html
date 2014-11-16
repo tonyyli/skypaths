@@ -113,33 +113,35 @@ Much of the original code comes from <a href="http://bl.ocks.org/mbostock/7784f4
 <p>
     Where do you want to look?
     <br>
-    <label for="nRA" 
-        style="display: inline-block; width: 240px; text-align: right">
-        RA = <span id="nRA-value">…</span> deg
+    <label for="nRA-slider" style="display: inline-block; width: 240px; text-align: right">
+        RA
     </label>
-    <input type="range" min="-180" max="180" id="nRA">
+    <input id="nRA-slider" type="range" min="-180" max="180" step="0.1">
+    <input id="nRA-number" type="number" min="-180" max="180" step="0.1"> deg
+
     <br>
-    <label for="nDec" 
-           style="display: inline-block; width: 240px; text-align: right">
-           Dec = <span id="nDec-value">…</span> deg
+    <label for="nDec-slider" style="display: inline-block; width: 240px; text-align: right">
+        Dec
     </label>
-    <input type="range" min="-90" max="90" id="nDec">
+    <input id="nDec-slider" type="range" min="-90" max="90" step="0.1">
+    <input id="nDec-number" type="number" min="-90" max="90" step="0.1"> deg
 </p>
 
 <p>
     Where are you?
     <br>
-    <label for="nLat" 
-           style="display: inline-block; width: 240px; text-align: right">
-           Latitude = <span id="nLat-value">…</span> deg
+    <label for="nLat-slider" style="display: inline-block; width: 240px; text-align: right">
+        Latitude
     </label>
-    <input type="range" min="-90" max="90" id="nLat">
+    <input id="nLat-slider" type="range" min="-90" max="90" step="0.1">
+    <input id="nLat-number" type="number" min="-90" max="90" step="0.1"> deg
+
     <br>
-    <label for="nLon" 
-           style="display: inline-block; width: 240px; text-align: right">
-           Longitude = <span id="nLon-value">…</span> deg
+    <label for="nLon-slider" style="display: inline-block; width: 240px; text-align: right">
+           Longitude
     </label>
-    <input type="range" min="-180" max="180" id="nLon">
+    <input id="nLon-slider" type="range" min="-180" max="180" step="0.1">
+    <input id="nLon-number" type="number"min="-180" max="180" step="0.1"> deg
 </p>
 
 <svg width="640" height="640"></svg>
@@ -242,14 +244,14 @@ var ra0 = 0,
     dec0 = 0,
     lat0 = 0,
     lon0 = 0;
-d3.select("#nRA-value").text(ra0);
-d3.select("#nDec-value").text(dec0);
-d3.select("#nLon-value").text(lon0);
-d3.select("#nLat-value").text(lat0);
-d3.select("#nRA").property("value", ra0);
-d3.select("#nDec").property("value", dec0);
-d3.select("#nLon").property("value", lon0);
-d3.select("#nLat").property("value", lat0);
+d3.select("#nRA-number").property("value", ra0);
+d3.select("#nDec-number").property("value", dec0);
+d3.select("#nLon-number").property("value", lon0);
+d3.select("#nLat-number").property("value", lat0);
+d3.select("#nRA-slider").property("value", ra0);
+d3.select("#nDec-slider").property("value", dec0);
+d3.select("#nLon-slider").property("value", lon0);
+d3.select("#nLat-slider").property("value", lat0);
 
 //var skypath = svg.insert("path", ".sphere")
 //    .attr("class", "sky-path");
@@ -270,44 +272,49 @@ updateCurve(ra0, dec0, lon0, lat0);
 /////////////////////////////////////////////
 // Define how plot is updated in this section
 
-d3.select("#nRA").on("input", function() { updateRA(+this.value); });
-d3.select("#nDec").on("input", function() { updateDec(+this.value); });
-d3.select("#nLon").on("input", function() { updateLongitude(+this.value); });
-d3.select("#nLat").on("input", function() { updateLatitude(+this.value); });
+d3.select("#nRA-slider").on("input", function() { updateRA(+this.value); });
+d3.select("#nDec-slider").on("input", function() { updateDec(+this.value); });
+d3.select("#nLon-slider").on("input", function() { updateLongitude(+this.value); });
+d3.select("#nLat-slider").on("input", function() { updateLatitude(+this.value); });
+
+d3.select("#nRA-number").on("input", function() { updateRA(+this.value); });
+d3.select("#nDec-number").on("input", function() { updateDec(+this.value); });
+d3.select("#nLon-number").on("input", function() { updateLongitude(+this.value); });
+d3.select("#nLat-number").on("input", function() { updateLatitude(+this.value); });
 
 function updateRA(ra) {
-  d3.select("#nRA-value").text(ra); // Update text next to slider
-  d3.select("#nRA").property("value", ra); // Update underlying value of slider
+  d3.select("#nRA-number").property("value", ra); // Update text box next to slider
+  d3.select("#nRA-slider").property("value", ra); // Update underlying value of slider
   updateCurve(ra,
-          +d3.select("#nDec").property("value"),
-          +d3.select("#nLon").property("value"),
-          +d3.select("#nLat").property("value") ); // Update the curve
+          +d3.select("#nDec-slider").property("value"),
+          +d3.select("#nLon-slider").property("value"),
+          +d3.select("#nLat-slider").property("value") ); // Update the curve
 }
 
 function updateDec(dec) {
-  d3.select("#nDec-value").text(dec); // Update text next to slider
-  d3.select("#nDec").property("value", dec); // Update underlying value of slider
-  updateCurve(+d3.select("#nRA").property("value"),
+  d3.select("#nDec-number").property("value", dec); // Update text box next to slider
+  d3.select("#nDec-slider").property("value", dec); // Update underlying value of slider
+  updateCurve(+d3.select("#nRA-slider").property("value"),
           dec,
-          +d3.select("#nLon").property("value"),
-          +d3.select("#nLat").property("value") ); // Update the curve
+          +d3.select("#nLon-slider").property("value"),
+          +d3.select("#nLat-slider").property("value") ); // Update the curve
 }
 
 function updateLongitude(lon) {
-  d3.select("#nLon-value").text(lon); // Update text next to slider
-  d3.select("#nLon").property("value", lon); // Update underlying value of slider
-  updateCurve(+d3.select("#nRA").property("value"),
-          +d3.select("#nDec").property("value"),
+  d3.select("#nLon-number").property("value", lon); // Update text box next to slider
+  d3.select("#nLon-slider").property("value", lon); // Update underlying value of slider
+  updateCurve(+d3.select("#nRA-slider").property("value"),
+          +d3.select("#nDec-slider").property("value"),
           lon,
-          +d3.select("#nLat").property("value") ); // Update the curve
+          +d3.select("#nLat-slider").property("value") ); // Update the curve
 }
 
 function updateLatitude(lat) {
-  d3.select("#nLat-value").text(lat); // Update text next to slider
-  d3.select("#nLat").property("value", lat); // Update underlying value of slider
-  updateCurve(+d3.select("#nRA").property("value"),
-          +d3.select("#nDec").property("value"),
-          +d3.select("#nLon").property("value"),
+  d3.select("#nLat-number").property("value", lat); // Update text box next to slider
+  d3.select("#nLat-slider").property("value", lat); // Update underlying value of slider
+  updateCurve(+d3.select("#nRA-slider").property("value"),
+          +d3.select("#nDec-slider").property("value"),
+          +d3.select("#nLon-slider").property("value"),
           lat ); // Update the curve
 }
 
